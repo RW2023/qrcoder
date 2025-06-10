@@ -1,10 +1,8 @@
-"use client"
+'use client'
 
-import { useEffect, useRef } from "react"
-import QRCodeStyling, {
-    Options as QRCodeOptions,
-} from "qr-code-styling"
-import type { ColorConfig } from "@/components/ColorControls"
+import { useEffect, useRef } from 'react'
+import QRCodeStyling, { Options as QRCodeOptions } from 'qr-code-styling'
+import type { ColorConfig } from '@/components/ColorControls'
 
 /**
  * QRPreview
@@ -22,7 +20,7 @@ export default function QRPreview({
     const containerRef = useRef<HTMLDivElement>(null)
     const qrRef = useRef<QRCodeStyling | null>(null)
 
-    /* ---------------- build options from colorConfig --------------- */
+    /** Build QR code options from the color config */
     const buildOptions = (): QRCodeOptions => {
         const {
             fgColor,
@@ -33,7 +31,7 @@ export default function QRPreview({
             gradient,
         } = colorConfig
 
-        const dotsOptions: QRCodeOptions["dotsOptions"] = useGradient
+        const dotsOptions: QRCodeOptions['dotsOptions'] = useGradient
             ? {
                 gradient: {
                     type: gradient.type,
@@ -57,7 +55,7 @@ export default function QRPreview({
         }
     }
 
-    /* ---------------- create once ---------------- */
+    /** Create QR code instance once on mount */
     useEffect(() => {
         if (!containerRef.current) return
         qrRef.current = new QRCodeStyling(buildOptions())
@@ -65,7 +63,7 @@ export default function QRPreview({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    /* ---------------- update on change ---------------- */
+    /** Update QR code on changes */
     useEffect(() => {
         qrRef.current?.update(buildOptions())
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -74,18 +72,18 @@ export default function QRPreview({
     return (
         <div
             ref={containerRef}
-            className="rounded-lg shadow-md bg-base-100 flex items-center justify-center"
+            className="w-fit rounded-lg shadow-lg bg-base-200 p-4 flex items-center justify-center"
         />
     )
 }
 
-/* ---------------------------------------------------
- * Helper: call qrRef.current?.download() elsewhere
- * ------------------------------------------------- */
+/**
+ * Helper to trigger QR code download
+ */
 export function downloadQRCode(
     qr: QRCodeStyling | null,
-    name = "qr-code",
-    ext: "png" | "svg" | "jpeg" = "png"
+    name = 'qr-code',
+    ext: 'png' | 'svg' | 'jpeg' = 'png'
 ) {
     qr?.download({ name, extension: ext })
 }
