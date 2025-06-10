@@ -6,7 +6,7 @@ import type { ColorConfig } from '@/components/ColorControls'
 
 /**
  * QRPreview
- * Renders a live, update‑on‑change QR code using qr-code-styling.
+ * Renders a live, update-on-change QR code using qr-code-styling.
  */
 export default function QRPreview({
     data,
@@ -69,21 +69,17 @@ export default function QRPreview({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [colorConfig, data, size])
 
-    return (
-        <div
-            ref={containerRef}
-            className="w-fit rounded-lg shadow-lg bg-base-200 p-4 flex items-center justify-center"
-        />
-    )
-}
+    /** Trigger download */
+    const handleDownload = () => {
+        qrRef.current?.download({ name: 'qr-code', extension: 'png' })
+    }
 
-/**
- * Helper to trigger QR code download
- */
-export function downloadQRCode(
-    qr: QRCodeStyling | null,
-    name = 'qr-code',
-    ext: 'png' | 'svg' | 'jpeg' = 'png'
-) {
-    qr?.download({ name, extension: ext })
+    return (
+        <div className="w-fit rounded-lg shadow-lg bg-base-200 p-4 flex flex-col items-center gap-4">
+            <div ref={containerRef} />
+            <button onClick={handleDownload} className="btn btn-primary btn-sm">
+                Download PNG
+            </button>
+        </div>
+    )
 }
