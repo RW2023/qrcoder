@@ -2,32 +2,24 @@
 
 import { useState } from 'react';
 import QRCode from 'qrcode';
-import Image from 'next/image';
+import QRCodeForm from '@/components/QRCodeForm';
+import QRCodeDisplay from '@/components/QRCodeDisplay';
 
 export default function HomePage() {
   const [text, setText] = useState('');
   const [qrCodeData, setQrCodeData] = useState<string | null>(null);
 
-  const generateQRCode = async () => {
-    if (!text) return;
-
+  const generateQRCode = async (input: string) => {
+    if (!input) return;
     try {
-      const url = text.startsWith('http://') || text.startsWith('https://')
-        ? text
-        : `https://${text}`;
+      const url = input.startsWith('http://') || input.startsWith('https://')
+        ? input
+        : `https://${input}`;
       const data = await QRCode.toDataURL(url);
       setQrCodeData(data);
     } catch (err) {
-      console.error('Failed to generate QR code', err);
+      console.error('QR generation failed:', err);
     }
-  };
-
-  const downloadQRCode = () => {
-    if (!qrCodeData) return;
-    const link = document.createElement('a');
-    link.href = qrCodeData;
-    link.download = 'qrcode.png';
-    link.click();
   };
 
   return (
@@ -38,33 +30,12 @@ export default function HomePage() {
       </div>
 
       <div className="w-full max-w-md card bg-base-100 shadow-xl p-6 space-y-4">
-        <input
-          type="text"
-          placeholder="Enter a URL or any text"
-          className="input input-bordered w-full"
+        <QRCodeForm
           value={text}
-          onChange={(e) => setText(e.target.value)}
+          onChange={setText}
+          onGenerate={generateQRCode}
         />
-
-        <button className="btn btn-primary w-full" onClick={generateQRCode}>
-          Generate QR Code
-        </button>
-
-        {qrCodeData && (
-          <div className="flex flex-col items-center space-y-2">
-            <Image
-              src={qrCodeData}
-              alt="Generated QR Code"
-              width={192}
-              height={192}
-              unoptimized
-              className="rounded"
-            />
-            <button className="btn btn-outline btn-sm" onClick={downloadQRCode}>
-              Download PNG
-            </button>
-          </div>
-        )}
+        {qrCodeData && <QRCodeDisplay qrCodeData={qrCodeData} />}
       </div>
     </main>
   );
