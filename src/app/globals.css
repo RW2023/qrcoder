@@ -10,12 +10,26 @@
   --foreground: #171717;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* 🎨 Custom Palette */
+  --dark-purple: hsla(261, 54%, 10%, 1);
+  --honeydew: hsla(141, 30%, 91%, 1);
+  --jonquil: hsla(46, 100%, 54%, 1);
+  --ash-gray: hsla(153, 6%, 70%, 1);
+  --rich-black: hsla(226, 100%, 3%, 1);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+
+    /* Optional: tweak palette in dark mode */
+    --dark-purple: hsla(261, 54%, 12%, 1);
+    --honeydew: hsla(141, 20%, 80%, 1);
+    --jonquil: hsla(46, 95%, 55%, 1);
+    --ash-gray: hsla(153, 5%, 60%, 1);
+    --rich-black: hsla(226, 100%, 5%, 1);
   }
 }
 
