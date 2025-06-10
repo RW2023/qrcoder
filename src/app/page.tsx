@@ -1,42 +1,49 @@
-'use client';
+"use client"
 
-import { useState } from 'react';
-import QRCode from 'qrcode';
-import QRCodeForm from '@/components/QRCodeForm';
-import QRCodeDisplay from '@/components/QRCodeDisplay';
+import { useState } from "react"
+import ColorControls, { ColorConfig } from "@/components/ColorControls"
+import QRPreview from "@/components/QRPreview"
 
 export default function HomePage() {
-  const [text, setText] = useState('');
-  const [qrCodeData, setQrCodeData] = useState<string | null>(null);
+  const [colorConfig, setColorConfig] = useState<ColorConfig>({
+    useGradient: false,
+    fgColor: "#000000",
+    bgColor: "#ffffff",
+    gradient: {
+      type: "linear",
+      startColor: "#000000",
+      endColor: "#ff0000",
+    },
+    eyeColor: "#000000",
+    eyeBorderColor: "#ffffff",
+  })
 
-  const generateQRCode = async (input: string) => {
-    if (!input) return;
-    try {
-      const url = input.startsWith('http://') || input.startsWith('https://')
-        ? input
-        : `https://${input}`;
-      const data = await QRCode.toDataURL(url);
-      setQrCodeData(data);
-    } catch (err) {
-      console.error('QR generation failed:', err);
-    }
-  };
+  const [data, setData] = useState("https://example.com")
 
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen px-4 py-12 space-y-6 bg-background text-foreground">
-      <div className="max-w-md w-full text-center space-y-2">
+    <main className="grid lg:grid-cols-2 gap-10 p-8">
+      {/* Left: Controls */}
+      <div className="space-y-6">
         <h1 className="text-3xl font-bold">QR Code Generator</h1>
-        <p className="text-sm opacity-80">Paste a URL or text below to generate a QR code instantly.</p>
+
+        <label className="form-control">
+          <span className="label-text font-semibold">QR Code Data</span>
+          <input
+            type="text"
+            className="input input-bordered"
+            value={data}
+            onChange={(e) => setData(e.target.value)}
+          />
+        </label>
+
+        <ColorControls colorConfig={colorConfig} onChange={setColorConfig} />
       </div>
 
-      <div className="w-full max-w-md card bg-base-100 shadow-xl p-6 space-y-4">
-        <QRCodeForm
-          value={text}
-          onChange={setText}
-          onGenerate={generateQRCode}
-        />
-        {qrCodeData && <QRCodeDisplay qrCodeData={qrCodeData} />}
+      {/* Right: Live QR Preview */}
+      <div className="flex flex-col items-center justify-center">
+        <QRPreview data={data} colorConfig={colorConfig} size={300} />
+        <p className="text-sm text-gray-500 mt-4">Live preview updates in real-time</p>
       </div>
     </main>
-  );
+  )
 }
