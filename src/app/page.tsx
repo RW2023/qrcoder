@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import QRCode from 'qrcode';
+import Image from 'next/image';
 
 export default function HomePage() {
   const [text, setText] = useState('');
@@ -9,8 +10,12 @@ export default function HomePage() {
 
   const generateQRCode = async () => {
     if (!text) return;
+
     try {
-      const data = await QRCode.toDataURL(text);
+      const url = text.startsWith('http://') || text.startsWith('https://')
+        ? text
+        : `https://${text}`;
+      const data = await QRCode.toDataURL(url);
       setQrCodeData(data);
     } catch (err) {
       console.error('Failed to generate QR code', err);
@@ -47,7 +52,14 @@ export default function HomePage() {
 
         {qrCodeData && (
           <div className="flex flex-col items-center space-y-2">
-            <img src={qrCodeData} alt="Generated QR Code" className="w-48 h-48" />
+            <Image
+              src={qrCodeData}
+              alt="Generated QR Code"
+              width={192}
+              height={192}
+              unoptimized
+              className="rounded"
+            />
             <button className="btn btn-outline btn-sm" onClick={downloadQRCode}>
               Download PNG
             </button>
