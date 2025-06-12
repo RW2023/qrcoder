@@ -75,8 +75,11 @@ export default function QRPreview({
     }
 
     return (
-        <div className="w-fit rounded-lg shadow-lg bg-base-200 p-4 flex flex-col items-center gap-4">
-            <div ref={containerRef} />
+        <div
+            className="rounded-lg shadow-lg bg-base-200 p-4 flex flex-col items-center gap-4"
+            style={{ width: size, maxWidth: '100%' }}
+        >
+            <div ref={containerRef} className="w-full h-full" />
             <button onClick={handleDownload} className="btn btn-primary btn-sm">
                 Download PNG
             </button>
